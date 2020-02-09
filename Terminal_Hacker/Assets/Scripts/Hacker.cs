@@ -9,8 +9,11 @@ public class Hacker : MonoBehaviour
     Screen currentScreen = Screen.Mainmenu;
 
     string password;
-    string[] level1Passwords = { "Mario", "creed", "Witcher" };
-    string[] level2Passwords = { "Tomb", "GhostRecon", "BreakPoint" };
+    string[] level1Passwords = { "book", "pen", "table" };
+    string[] level2Passwords = { "gun", "danger", "savior" };
+    string[] level3Passwords = { "space", "starwars", "galaxy" };
+
+    string menuType = "You may type menu at any time";
    
     void Start()
     {
@@ -24,6 +27,11 @@ public class Hacker : MonoBehaviour
         {
             currentScreen = Screen.Mainmenu;
             ShowMainMenu();
+        }
+
+        else if(input == "quit" || input == "close"|| input == "exit")
+        {
+            Application.Quit();
         }
 
         else if(currentScreen == Screen.Mainmenu)
@@ -40,12 +48,12 @@ public class Hacker : MonoBehaviour
     private void RunMainMenu(string input)
     {
       
-        bool IsvalidNumber = (input == "1" || input == "2");
+        bool IsvalidNumber = (input == "1" || input == "2" || input == "3");
          if (IsvalidNumber)
         {
             Terminal.ClearScreen();
             level = int.Parse(input);
-            Startgame();
+            AskForPassword();
         }
 
        else if (input == "007")
@@ -56,6 +64,8 @@ public class Hacker : MonoBehaviour
         else
         {
             Terminal.WriteLine("Please choose valid option");
+            Terminal.WriteLine(menuType);
+
         }
     }
    
@@ -71,11 +81,18 @@ public class Hacker : MonoBehaviour
     }
 
 
-    void Startgame()
+    void AskForPassword()
     {
         currentScreen = Screen.Password;
         Terminal.ClearScreen();
-        switch(level)
+        SetRandomPassword();
+        Terminal.WriteLine("Enter your Password:" + password.Anagram());
+        Terminal.WriteLine(menuType);
+    }
+
+    private void SetRandomPassword()
+    {
+        switch (level)
         {
             case 1:
                 int index1 = Random.Range(0, level1Passwords.Length);
@@ -83,59 +100,91 @@ public class Hacker : MonoBehaviour
                 break;
 
             case 2:
-                int index2 = Random.Range(0, level1Passwords.Length);
+                int index2 = Random.Range(0, level2Passwords.Length);
                 password = level2Passwords[index2];
                 break;
 
-            default:Debug.LogError("Invalid number");
+            case 3:
+                int index3 = Random.Range(0, level3Passwords.Length);
+                password = level3Passwords[index3];
+                break;
+
+            default:
+                Debug.LogError("Invalid number");
                 break;
 
         }
-        Terminal.WriteLine("Password:");
     }
 
     private void CheckPassword(string input)
     {
         if (input == password)
         {
+            DisplayWinScreen();
+        
+        }
+        else
+        {
+            AskForPassword();
+        }
+    }
 
-            switch (level)
-            {
-                case 1:
-                       currentScreen = Screen.Win;
-                       Terminal.WriteLine("Well Done");
-                       Terminal.WriteLine(@"                                                                       
+    void DisplayWinScreen()
+    {
+        switch (level)
+        {
+            case 1:
+                currentScreen = Screen.Win;
+                Terminal.WriteLine("Well Done you have got the book");
+                Terminal.WriteLine("Play Again for greater challanges");
+                Terminal.WriteLine(@"                                                                       
        ______
       /     //
      /     //
     /_____//
    (______(/
                         ");
-                       break;
+              
+                Terminal.WriteLine(menuType);
+                break;
 
-                case 2:
-                    currentScreen = Screen.Win;
-                    Terminal.WriteLine("You Have Got The Key");
-                    Terminal.WriteLine(@"                                                                       
+            case 2:
+                currentScreen = Screen.Win;
+                Terminal.WriteLine("You Have Got The Key");
+                Terminal.WriteLine("Play Again for greater challanges");
+                Terminal.WriteLine(@"                                                                       
  __  
 /0 \_____
 \__/-='='                     
 
                                        ");
-                              break;
+              
+                Terminal.WriteLine(menuType);
+                break;
 
-                default:
-                    Debug.LogError("Invalid Password");
-                    break;
-            } 
+            case 3:
+                currentScreen = Screen.Win;
 
-        }
-         
-        
+                Terminal.WriteLine("Welcome to the Nasa");
+                Terminal.WriteLine("Play Again for greater challanges");
+                Terminal.WriteLine(@"     
+___    __        ______
+| |\  | |   /\   ||   |   /\
+| | \ | |  /__\    \\    /__\
+|_|  \__| /    \ |___|| /    \
 
-        else
-        {
-            Terminal.WriteLine("oops wrong password");
+
+
+                                       ");
+               
+              
+                Terminal.WriteLine(menuType);
+                break;
+
+
+            default:
+                Debug.LogError("Invalid Password");
+                break;
         }
     }
 }
